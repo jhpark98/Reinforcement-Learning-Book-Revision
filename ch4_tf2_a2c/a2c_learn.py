@@ -19,7 +19,7 @@ class Actor(Model):
         super(Actor, self).__init__()
         self.action_bound = action_bound
 
-        self.h1 = Dense(64, activation='relu')
+        self.h1 = Dense(64, activation='relu', input_shape=(1, 1))
         self.h2 = Dense(32, activation='relu')
         self.h3 = Dense(16, activation='relu')
         self.mu = Dense(action_dim, activation='tanh')
@@ -44,7 +44,7 @@ class Critic(Model):
     def __init__(self):
         super(Critic, self).__init__()
 
-        self.h1 = Dense(64, activation='relu')
+        self.h1 = Dense(64, activation='relu', input_shape=(1, 1))
         self.h2 = Dense(32, activation='relu')
         self.h3 = Dense(16, activation='relu')
         self.v = Dense(1, activation='linear')
