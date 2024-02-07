@@ -19,7 +19,7 @@ class Actor(Model):
         super(Actor, self).__init__()
         self.action_bound = action_bound
 
-        self.h1 = Dense(64, activation='relu', input_shape=(1, 1))
+        self.h1 = Dense(64, activation='relu')
         self.h2 = Dense(32, activation='relu')
         self.h3 = Dense(16, activation='relu')
         self.mu = Dense(action_dim, activation='tanh')
@@ -44,7 +44,7 @@ class Critic(Model):
     def __init__(self):
         super(Critic, self).__init__()
 
-        self.h1 = Dense(64, activation='relu', input_shape=(1, 1))
+        self.h1 = Dense(64, activation='relu')
         self.h2 = Dense(32, activation='relu')
         self.h3 = Dense(16, activation='relu')
         self.v = Dense(1, activation='linear')
@@ -106,6 +106,7 @@ class A2Cagent(object):
 
     ## 액터 신경망에서 행동 샘플링
     def get_action(self, state):
+        print(state)
         mu_a, std_a = self.actor(state)
         mu_a = mu_a.numpy()[0]
         std_a = std_a.numpy()[0]
