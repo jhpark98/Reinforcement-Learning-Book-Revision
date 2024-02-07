@@ -95,6 +95,9 @@ class A2Cagent(object):
         # 에프소드에서 얻은 총 보상값을 저장하기 위한 변수
         self.save_epi_reward = []
 
+        # path to save
+        self.dir = '/content/gdrive/MyDrive/Colab Notebooks/Reinforcement-Learning-Book-Revision/ch4_tf2_a2c/save_weights'
+
 
     ## 로그-정책 확률밀도함수
     def log_pdf(self, mu, std, action):
@@ -106,7 +109,7 @@ class A2Cagent(object):
 
     ## 액터 신경망에서 행동 샘플링
     def get_action(self, state):
-        print(state)
+        state = tf.reshape(state, [1, self.state_dim])
         mu_a, std_a = self.actor(state)
         mu_a = mu_a.numpy()[0]
         std_a = std_a.numpy()[0]
@@ -179,7 +182,7 @@ class A2Cagent(object):
             # 에피소드 초기화
             time, episode_reward, done = 0, 0, False
             # 환경 초기화 및 초기 상태 관측
-            state = self.env.reset()[0]
+            state = self.env.reset()
 
             while not done:
 
@@ -191,7 +194,7 @@ class A2Cagent(object):
                 # 행동 범위 클리핑
                 action = np.clip(action, -self.action_bound, self.action_bound)
                 # 다음 상태, 보상 관측
-                next_state, reward, done, _, _ = self.env.step(action)
+                next_state, reward, done, _ = self.env.step(action)
                 # shape 변환
                 state = np.reshape(state, [1, self.state_dim])
                 action = np.reshape(action, [1, self.action_dim])
@@ -259,11 +262,11 @@ class A2Cagent(object):
 
             # 에피소드 10번마다 신경망 파라미터를 파일에 저장
             if ep % 10 == 0:
-                self.actor.save_weights("./save_weights/pendulum_actor.h5")
-                self.critic.save_weights("./save_weights/pendulum_critic.h5")
+                self.actor.save_weights(self.dir + "/pendulum_actor.h5")
+                self.critic.save_weights(self.dir + "/pendulum_critic.h5")
 
         # 학습이 끝난 후, 누적 보상값 저장
-        np.savetxt('./save_weights/pendulum_epi_reward.txt', self.save_epi_reward)
+        np.savetxt(self.dir + '/pendulum_epi_reward.txt', self.save_epi_reward)
         print(self.save_epi_reward)
 
 
@@ -271,4 +274,3 @@ class A2Cagent(object):
     def plot_result(self):
         plt.plot(self.save_epi_reward)
         plt.show()
-
